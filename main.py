@@ -8,7 +8,18 @@ lives = 1
 print("Proto aby jsi se mohl dostat z města budeš muset odpovědět pár otázek")
 
 def print_hack_message(index):
-    hack_message = ["Probíhá nabourání do první obraného štítu Řídícího centra", "Nabourávám...", "První štít překonán. Zahajuji překročení druhého štítu podezření: 0 %", "Nabourávám", "Bourání proběhlo neuspěšně. Zahajuji druhý pokus", "Nabourání úspěšné 2. obraný štít překonán", "Zahajuji proces vypnutí", "Nabourání do řídícího panelu", "Zkouším hesla...", "Panel byl hacknut, Vypínám řídící centrum\nVšechny systémy byly vypnuty zásadní indexy města byly schozeny na 0!"]
+    hack_message = [
+        "Probíhá nabourání do první obraného štítu Řídícího centra",
+        "Nabourávám...",
+        "První štít překonán. Zahajuji překročení druhého štítu podezření: 0 %",
+        "Nabourávám",
+        "Bourání proběhlo neuspěšně. Zahajuji druhý pokus",
+        "Nabourání úspěšné 2. obraný štít překonán",
+        "Zahajuji proces vypnutí",
+        "Nabourání do řídícího panelu",
+        "Zkouším hesla...",
+        "Panel byl hacknut, Vypínám řídící centrum\nVšechny systémy byly vypnuty zásadní indexy města byly schozeny na 0!"
+    ]
     print(hack_message[index])
 
 for index, question in enumerate(data):
