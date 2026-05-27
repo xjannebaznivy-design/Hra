@@ -1,70 +1,90 @@
 <!DOCTYPE html>
 <html lang="cs">
+
 <head>
-<meta charset="UTF-8">
-<title>Moje Hra</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body{
-    margin:0;
-    background:black;
-    color:white;
-    font-family:monospace;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-}
+    <title>Terminal Game</title>
 
-h1{
-    margin-top:20px;
-}
+    <style>
+        body {
+            margin: 0;
+            background: black;
+            color: #00ff00;
+            font-family: monospace;
 
-.buttons{
-    margin:20px;
-}
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-button{
-    padding:10px 20px;
-    margin:10px;
-    background:#222;
-    color:white;
-    border:1px solid #555;
-    cursor:pointer;
-    font-size:18px;
-}
+        h1 {
+            margin-top: 20px;
+            text-shadow: 0 0 10px #00ff00;
+        }
 
-iframe{
-    width:90vw;
-    height:80vh;
-    border:none;
-    display:none;
-}
-</style>
+        .buttons {
+            margin: 20px;
+        }
+
+        button {
+            padding: 12px 24px;
+            margin: 10px;
+
+            background: #111;
+            color: #00ff00;
+
+            border: 1px solid #00ff00;
+
+            cursor: pointer;
+            font-size: 18px;
+
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #00ff00;
+            color: black;
+        }
+
+        iframe {
+            width: 90vw;
+            height: 80vh;
+
+            border: 2px solid #00ff00;
+
+            display: none;
+
+            box-shadow: 0 0 20px #00ff00;
+        }
+    </style>
 </head>
 
 <body>
 
-<h1>TERMINAL GAME</h1>
+    <h1>TERMINAL GAME</h1>
 
-<div class="buttons">
-    <button onclick="startGame()">START</button>
-    <button onclick="closeGame()">EXIT</button>
-</div>
+    <div class="buttons">
+        <button onclick="startGame()">START</button>
+        <button onclick="closeGame()">EXIT</button>
+    </div>
 
-<iframe
-    id="gameFrame"
-    src="https://onlinegdb.com/embed/aJ0MYo5Lp?theme=dark">
-</iframe>
+    <iframe
+        id="gameFrame"
+        src="https://onlinegdb.com/embed/aJ0MYo5Lp?theme=dark">
+    </iframe>
 
-<script>
-function startGame(){
-    document.getElementById("gameFrame").style.display = "block";
-}
+    <script>
+        function startGame() {
+            document.getElementById("gameFrame").style.display = "block";
+        }
 
-function closeGame(){
-    document.getElementById("gameFrame").style.display = "none";
-}
-</script>
+        function closeGame() {
+            document.getElementById("gameFrame").style.display = "none";
+        }
+    </script>
 
 </body>
+
 </html>
