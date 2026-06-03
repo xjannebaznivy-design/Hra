@@ -71,6 +71,9 @@ function addLineToTerminal(text, className = 'output-line') {
   line.textContent = text;
   content.appendChild(line);
   
+  // Zvuk psaní
+  playTypeSound();
+  
   // Auto-scroll na konec
   setTimeout(() => {
     content.scrollTop = content.scrollHeight;
@@ -137,6 +140,7 @@ function submitTerminalAnswer() {
 
   if (!answer) {
     addLineToTerminal('ERROR: Odpověď nelze ponechat prázdnou!', 'error-line');
+    playWrongSound();
     return;
   }
 
@@ -155,9 +159,11 @@ function submitTerminalAnswer() {
   const isCorrect = answer === question.answar || (typeof question.answar === "string" && answer === question.answar.toLowerCase());
 
   if (isCorrect) {
+    playCorrectSound();
     addLineToTerminal('✅ [ACCESS_GRANTED] Správná odpověď!', 'success-line');
     addLineToTerminal('Systém se připravuje na další otázku...', 'output-line');
   } else {
+    playWrongSound();
     lives--;
     addLineToTerminal('❌ [ACCESS_DENIED] Špatná odpověď!', 'error-line');
     addLineToTerminal(`Zbývá ti ${lives} ${lives === 1 ? "život" : "životů"}!`, 'error-line');
@@ -174,6 +180,8 @@ function submitTerminalAnswer() {
 function endTerminalGame(message) {
   const content = document.getElementById('terminalContent');
   const terminal = document.getElementById('terminal');
+
+  playGameOverSound();
 
   addLineToTerminal('', 'output-line');
   addLineToTerminal('═══════════════════════════════════════', 'output-line');
