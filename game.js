@@ -85,17 +85,17 @@ function displayTerminalQuestion() {
   const remainingTime = Math.floor(timeLimit / 1000) - elapsedTime;
 
   if (elapsedTime >= timeLimit / 1000) {
-    endTerminalGame("Vypršel čas! Roboti tě chytili!");
+    endTerminalGame("Vypršel čas! Roboti tě chytili!", false);
     return;
   }
 
   if (lives <= 0) {
-    endTerminalGame("Roboti tě našli a uvěznili. Prohrál jsi!");
+    endTerminalGame("Roboti tě našli a uvěznili. Prohrál jsi!", false);
     return;
   }
 
   if (currentIndex >= data.length) {
-    endTerminalGame("Gratuluji! Dokázel jsi hacknout celé město a deaktivoval jsi řídící Umělou inteligenci, nyní můžeš opustit město.");
+    endTerminalGame("Gratuluji! Dokázel jsi hacknout celé město a deaktivoval jsi řídící Umělou inteligenci, nyní můžeš opustit město.", true);
     return;
   }
 
@@ -177,7 +177,7 @@ function submitTerminalAnswer() {
   }, 2500);
 }
 
-function endTerminalGame(message) {
+function endTerminalGame(message, isWin) {
   const content = document.getElementById('terminalContent');
   const terminal = document.getElementById('terminal');
 
@@ -194,18 +194,21 @@ function endTerminalGame(message) {
   setTimeout(() => {
     const inputLine = document.querySelector('.terminal-input');
     
-    // Vymaž terminál
-    content.innerHTML = '';
-    
-    // Vypíš kód 8952
-    setTimeout(() => {
-      addLineToTerminal('8952', 'success-line');
+    if (isWin) {
+      // Vymaž terminál a vypíš kód 8952 jen když hráč vyhraje
+      content.innerHTML = '';
       
-      // Po chvíli přidej restart tlačítko
       setTimeout(() => {
-        inputLine.innerHTML = '<button class="restart-btn" onclick="location.reload()">⟳ RESTART</button>';
-      }, 1500);
-    }, 500);
+        addLineToTerminal('8952', 'success-line');
+        
+        setTimeout(() => {
+          inputLine.innerHTML = '<button class="restart-btn" onclick="location.reload()">⟳ RESTART</button>';
+        }, 1500);
+      }, 500);
+    } else {
+      // Při prohře jen přidej restart tlačítko
+      inputLine.innerHTML = '<button class="restart-btn" onclick="location.reload()">⟳ RESTART</button>';
+    }
   }, 1000);
 }
 
