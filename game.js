@@ -64,63 +64,85 @@ const hackMessages = [
   "Panel byl hacknut, Vypínám řídící centrum\nVšechny systémy byly vypnuty zásadní indexy města byly schozeny na 0!"
 ];
 
-function displayQuestion() {
+function addLineToTerminal(text, className = 'output-line') {
+  const content = document.getElementById('terminalContent');
+  const line = document.createElement('div');
+  line.className = `line ${className}`;
+  line.textContent = text;
+  content.appendChild(line);
+  
+  // Auto-scroll na konec
+  setTimeout(() => {
+    content.scrollTop = content.scrollHeight;
+  }, 0);
+}
+
+function displayTerminalQuestion() {
   const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
   const remainingTime = Math.floor(timeLimit / 1000) - elapsedTime;
 
   if (elapsedTime >= timeLimit / 1000) {
-    endGame("Vypršel čas! Roboti tě chytili!");
+    endTerminalGame("Vypršel čas! Roboti tě chytili!");
     return;
   }
 
   if (lives <= 0) {
-    endGame("Roboti tě našli a uvěznili. Prohrál jsi!");
+    endTerminalGame("Roboti tě našli a uvěznili. Prohrál jsi!");
     return;
   }
 
   if (currentIndex >= data.length) {
-    endGame("Gratuluji dokázel jsi hacknout celé město a deaktivoval jsi řídící Umělou inteligenci, nyní můžeš opustit město");
+    endTerminalGame("Gratuluji! Dokázel jsi hacknout celé město a deaktivoval jsi řídící Umělou inteligenci, nyní můžeš opustit město.");
     return;
   }
 
   const question = data[currentIndex];
-  const gameContainer = document.getElementById("gameContainer");
+  const content = document.getElementById('terminalContent');
 
-  gameContainer.innerHTML = `
-    <div class="game-content">
-      <div class="timer">⏱️ Zbývající čas: ${remainingTime}s</div>
-      <div class="lives">❤️ Životy: ${lives}</div>
-      <div class="question-number">Otázka ${currentIndex + 1}/${data.length}</div>
-      
-      <div class="question-box">
-        <h2>${question.text}</h2>
-        <p class="choices-label">${question.choses}</p>
-        <input 
-          type="text" 
-          id="answerInput" 
-          placeholder="Zadej odpověď..."
-          onkeypress="if(event.key === 'Enter') submitAnswer()"
-        />
-        <button onclick="submitAnswer()" class="submit-btn">ODPOVĚZ</button>
-      </div>
+  // Vymaž obsah a začni nanovo
+  if (currentIndex === 0) {
+    content.innerHTML = '';
+    addLineToTerminal('$ ./system.out', 'output-line');
+    addLineToTerminal('Connecting...', 'output-line');
+    addLineToTerminal('Connection established to [CITY_CORE]', 'output-line');
+    addLineToTerminal('', 'output-line');
+  }
 
-      <div class="hack-message">
-        <p>${hackMessages[currentIndex]}</p>
-      </div>
-    </div>
-  `;
+  // Zobraz hack message
+  addLineToTerminal(`$ echo "${hackMessages[currentIndex]}"`, 'command-line');
+  addLineToTerminal(hackMessages[currentIndex], 'output-line');
+  addLineToTerminal('', 'output-line');
 
-  document.getElementById("answerInput").focus();
+  // Zobraz čas a životy
+  addLineToTerminal(`⏱️  Čas: ${remainingTime}s | ❤️  Životů: ${lives}`, 'timer-line');
+  addLineToTerminal('', 'output-line');
+
+  // Zobraz otázku
+  addLineToTerminal(`[Otázka ${currentIndex + 1}/${data.length}]`, 'timer-line');
+  addLineToTerminal(`$ ask "${question.text}"`, 'command-line');
+  addLineToTerminal(`> ${question.text}`, 'question-line');
+  addLineToTerminal(`(${question.choses})`, 'output-line');
+  addLineToTerminal('', 'output-line');
+  addLineToTerminal('$ answer ', 'command-line');
+
+  // Focus na input
+  const input = document.getElementById('terminalInput');
+  input.value = '';
+  input.focus();
 }
 
-function submitAnswer() {
+function submitTerminalAnswer() {
   const question = data[currentIndex];
-  let answer = document.getElementById("answerInput").value;
+  let answer = document.getElementById('terminalInput').value;
 
   if (!answer) {
-    alert("Prosím zadej odpověď!");
+    addLineToTerminal('ERROR: Odpověď nelze ponechat prázdnou!', 'error-line');
     return;
   }
+
+  // Zobraz zadanou odpověď
+  addLineToTerminal(answer, 'command-line');
+  addLineToTerminal('', 'output-line');
 
   // Zpracování odpovědi
   if (question.answar === true || question.answar === false) {
@@ -130,41 +152,44 @@ function submitAnswer() {
     answer = answer.toLowerCase();
   }
 
-  const gameContainer = document.getElementById("gameContainer");
+  const isCorrect = answer === question.answar || (typeof question.answar === "string" && answer === question.answar.toLowerCase());
 
-  if (answer === question.answar || (typeof question.answar === "string" && answer === question.answar.toLowerCase())) {
-    gameContainer.innerHTML += `
-      <div class="result-message correct-answer">
-        ✅ To je správně!
-      </div>
-    `;
+  if (isCorrect) {
+    addLineToTerminal('✅ [ACCESS_GRANTED] Správná odpověď!', 'success-line');
+    addLineToTerminal('Systém se připravuje na další otázku...', 'output-line');
   } else {
     lives--;
-    gameContainer.innerHTML += `
-      <div class="result-message wrong-answer">
-        ❌ Toto není správná odpověď!<br>Měj se na pozoru zbývá ti ${lives} ${lives === 1 ? "život" : "životy"}!
-      </div>
-    `;
+    addLineToTerminal('❌ [ACCESS_DENIED] Špatná odpověď!', 'error-line');
+    addLineToTerminal(`Zbývá ti ${lives} ${lives === 1 ? "život" : "životů"}!`, 'error-line');
   }
+
+  addLineToTerminal('', 'output-line');
 
   setTimeout(() => {
     currentIndex++;
-    displayQuestion();
-  }, 2000);
+    displayTerminalQuestion();
+  }, 2500);
 }
 
-function endGame(message) {
-  const gameContainer = document.getElementById("gameContainer");
-  gameContainer.innerHTML = `
-    <div class="game-over">
-      <h1>${message}</h1>
-      <button onclick="location.reload()" class="restart-btn">HRÁT ZNOVU</button>
-    </div>
-  `;
+function endTerminalGame(message) {
+  const content = document.getElementById('terminalContent');
+  const terminal = document.getElementById('terminal');
+
+  addLineToTerminal('', 'output-line');
+  addLineToTerminal('═══════════════════════════════════════', 'output-line');
+  addLineToTerminal(message, message.includes('Gratuluji') ? 'success-line' : 'error-line');
+  addLineToTerminal('═══════════════════════════════════════', 'output-line');
+  addLineToTerminal('', 'output-line');
+  addLineToTerminal('$ system.shutdown()', 'command-line');
+
+  // Skryj input a přidej restart tlačítko
+  setTimeout(() => {
+    const inputLine = document.querySelector('.terminal-input');
+    inputLine.innerHTML = '<button class="restart-btn" onclick="location.reload()">⟳ RESTART</button>';
+  }, 1000);
 }
 
-// Spusť hru na načtení stránky
+// Spusť hru na načtení stránky - jen inicializuj, ne automaticky startuj
 window.onload = () => {
-  console.log("Proto aby jsi se mohl dostat z města budeš muset odpovědět pár otázek");
-  displayQuestion();
+  console.log("Hra je připravena. Klikni na START pro spuštění.");
 };
