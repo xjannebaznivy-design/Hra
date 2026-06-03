@@ -193,7 +193,19 @@ function endTerminalGame(message) {
   // Skryj input a přidej restart tlačítko
   setTimeout(() => {
     const inputLine = document.querySelector('.terminal-input');
-    inputLine.innerHTML = '<button class="restart-btn" onclick="location.reload()">⟳ RESTART</button>';
+    
+    // Vymaž terminál
+    content.innerHTML = '';
+    
+    // Vypíš kód 8952
+    setTimeout(() => {
+      addLineToTerminal('8952', 'success-line');
+      
+      // Po chvíli přidej restart tlačítko
+      setTimeout(() => {
+        inputLine.innerHTML = '<button class="restart-btn" onclick="location.reload()">⟳ RESTART</button>';
+      }, 1500);
+    }, 500);
   }, 1000);
 }
 
