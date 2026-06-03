@@ -31,7 +31,7 @@ for index, question in enumerate(data):
     
     print(question["text"])
     answer = input(f'{question["choses"]}: ')
-    if question["answar"] == True or question["answar"] == False:
+    if question["answer"] == True or question["answer"] == False:
         answer = answer.capitalize()
         if answer == "True":
             answer = True
@@ -42,7 +42,7 @@ for index, question in enumerate(data):
         answer = answer.lower()
 
         
-    if answer == question["answar"]:
+    if answer == question["answer"]:
         print("To je správně")
     else:
         lives -= 1
